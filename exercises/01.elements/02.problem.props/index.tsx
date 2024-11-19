@@ -4,17 +4,18 @@ import * as ReactDOM from 'react-dom/client'
 function Footer({ color }: { color: string }) {
 	return <footer style={{ color }}>I am the ({color}) footer</footer>
 }
+const footer = (color: string) => <Footer color={color} />
 
 // 🐨 make the Main component accept a footer prop instead of the color prop
 // 🦺 the type should be a React.ReactNode
-function Main({ color }: { color: string }) {
+function Main({ footer }: { footer: React.ReactNode }) {
 	const [count, setCount] = useState(0)
 	const increment = () => setCount((c) => c + 1)
 	return (
 		<div>
 			<button onClick={increment}>The count is {count}</button>
 			{/* 🐨 interpolate the footer here rather than creating a new <Footer /> element every render */}
-			<Footer color={color} />
+			{footer}
 		</div>
 	)
 }
@@ -32,7 +33,7 @@ function App() {
 				</div>
 			</div>
 			{/* 🐨 pass the footer prop instead of the color prop */}
-			<Main color={color} />
+			<Main footer={footer(color)} />
 		</div>
 	)
 }
