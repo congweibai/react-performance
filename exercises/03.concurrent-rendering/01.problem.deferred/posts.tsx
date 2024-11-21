@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { memo, useDeferredValue, useState } from 'react'
 import {
 	generateGradient,
 	getMatchingPosts,
@@ -10,10 +10,11 @@ import { ButtonWithTooltip } from './tooltip'
 export function MatchingPosts() {
 	const [searchParams] = useSearchParams()
 	const query = getQueryParam(searchParams)
+	const deferredQuery = useDeferredValue(query)
 	// 🐨 make a deferredQuery with useDeferredValue
 	// 🐨 pass the deferredQuery to getMatchingPosts here
 	// so React can defer the Cards we render with the matching posts.
-	const matchingPosts = getMatchingPosts(query)
+	const matchingPosts = getMatchingPosts(deferredQuery)
 
 	return (
 		<ul className="post-list">
@@ -25,7 +26,7 @@ export function MatchingPosts() {
 }
 
 // 🐨 wrap this in memo
-function Card({ post }: { post: BlogPost }) {
+const Card = memo(function ({ post }: { post: BlogPost }) {
 	const [isFavorited, setIsFavorited] = useState(false)
 
 	return (
@@ -64,7 +65,7 @@ function Card({ post }: { post: BlogPost }) {
 			))}
 		</li>
 	)
-}
+})
 
 function SlowThing() {
 	// This artificially slows down rendering
