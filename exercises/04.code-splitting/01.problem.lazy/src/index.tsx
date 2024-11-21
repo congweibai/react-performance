@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import * as ReactDOM from 'react-dom/client'
 import './index.css'
 // 💣 remove this import
-import Globe from './globe.tsx'
+// import Globe from './globe.tsx'
 
 // 🐨 use lazy to create a Globe component which uses a dynamic import
 // to get the Globe component from the './globe' module.
+const Globe = lazy(() => import('./globe.tsx'))
 
 function App() {
 	const [showGlobe, setShowGlobe] = useState(false)
@@ -33,10 +34,12 @@ function App() {
 				/>
 				{' show globe'}
 			</label>
-			<div style={{ width: 400, height: 400 }}>
-				{/* 🐨 stick a Suspense boundary around this with a fallback of "loading..." */}
-				{showGlobe ? <Globe /> : null}
-			</div>
+			<Suspense fallback="loading...">
+				<div style={{ width: 400, height: 400 }}>
+					{/* 🐨 stick a Suspense boundary around this with a fallback of "loading..." */}
+					{showGlobe ? <Globe /> : null}
+				</div>
+			</Suspense>
 		</div>
 	)
 }
