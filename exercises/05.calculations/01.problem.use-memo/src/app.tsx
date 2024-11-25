@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { searchCities } from './cities/index.ts'
 import './index.css'
 import { useCombobox, useForceRerender } from './utils'
@@ -8,7 +8,10 @@ export function App() {
 	const [inputValue, setInputValue] = useState('')
 
 	// 🐨 wrap this searchCities in a call to `useMemo`
-	const cities = searchCities(inputValue).slice(0, 500)
+	const cities = useMemo(
+		() => searchCities(inputValue).slice(0, 500),
+		[inputValue],
+	)
 
 	const {
 		selectedItem: selectedCity,
