@@ -69,9 +69,9 @@ function CityChooser() {
 								key={city.id}
 								index={index}
 								// 💣 remove this prop
-								selectedCity={selectedCity}
+								isSelected={selectedCity?.id === city.id}
 								// 💣 remove this prop
-								highlightedIndex={highlightedIndex}
+								isHighlighted={highlightedIndex === index}
 								city={city}
 								getItemProps={getItemProps}
 							/>
@@ -87,20 +87,18 @@ const ListItem = memo(
 	function ListItem<City extends { id: string; name: string }>({
 		index,
 		city,
-		selectedCity,
-		highlightedIndex,
 		getItemProps,
+		isSelected,
+		isHighlighted,
 	}: {
 		index: number
 		city: City
 		// 🐨 remove this and replace it with an isSelected prop
-		selectedCity: City | null
+		isSelected: boolean
 		// 🐨 remove this and replace it with an isHighlighted prop
-		highlightedIndex: number
+		isHighlighted: boolean
 		getItemProps: UseComboboxPropGetters<City>['getItemProps']
 	}) {
-		const isSelected = selectedCity?.id === city.id
-		const isHighlighted = highlightedIndex === index
 		return (
 			<li
 				key={city.id}
@@ -118,16 +116,4 @@ const ListItem = memo(
 		)
 	},
 	// 💣 remove this custom comparator
-	(prevProps, nextProps) => {
-		const prevIsSelected = prevProps.selectedCity?.id === prevProps.city.id
-		const nextIsSelected = nextProps.selectedCity?.id === nextProps.city.id
-		const prevIsHighlighted = prevProps.highlightedIndex === prevProps.index
-		const nextIsHighlighted = nextProps.highlightedIndex === nextProps.index
-		return (
-			prevProps.index === nextProps.index &&
-			prevProps.city === nextProps.city &&
-			prevIsSelected === nextIsSelected &&
-			prevIsHighlighted === nextIsHighlighted
-		)
-	},
 )
