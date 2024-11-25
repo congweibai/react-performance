@@ -23,6 +23,8 @@ function App() {
 			<label
 				style={{ marginBottom: '1rem' }}
 				// 🐨 add onFocus and onPointerEnter events and set them to loadGlobe
+				onPointerEnter={loadGlobe}
+				onFocus={loadGlobe}
 			>
 				<input
 					type="checkbox"
