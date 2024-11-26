@@ -1,9 +1,10 @@
 import { type UseComboboxPropGetters } from 'downshift'
-import { Suspense, memo, use, useState, useTransition } from 'react'
+import { Suspense, memo, use, useRef, useState, useTransition } from 'react'
 import { useSpinDelay } from 'spin-delay'
 import { searchCities } from './cities/index.ts'
 import './index.css'
 import { useCombobox, useForceRerender } from './utils'
+import { useVirtualizer } from '@tanstack/react-virtual'
 
 const initialCitiesPromise = searchCities('')
 
@@ -25,8 +26,14 @@ function CityChooser() {
 	const isPending = useSpinDelay(isTransitionPending)
 
 	// 🐨 create a ref here for HTMLUListElement
+	const parentRef = useRef<HTMLUListElement>(null)
 
 	// 🐨 create a rowVirtualizer with useVirtualizer from "@tanstack/react-virtual"
+	const rowVirtualizer = useVirtualizer({
+		count: cities.length,
+		getScrollElement: () => parentRef.current,
+		estimateSize: () => 20,
+	})
 	// - the count should be the length of the items
 	// - the getScrollElement should return the ref you created above
 	// - the estimateSize callback should return 20
@@ -55,6 +62,7 @@ function CityChooser() {
 					: 'Selection Cleared',
 			),
 		itemToString: (city) => (city ? city.name : ''),
+		scrollIntoView: () => {},
 		// 🦉 we want to override Downshift's scrollIntoView functionality because
 		// the virtualizer will handle scrolling for us as the user uses the arrow keys:
 
@@ -66,10 +74,10 @@ function CityChooser() {
 		// 💰 because you're not here to learn the downshift API I'm just gonna give
 		// this stuff to you. It's the concepts you're here to learn!
 		// scrollIntoView: () => {},
-		// onHighlightedIndexChange: ({ highlightedIndex }) => {
-		// 	if (highlightedIndex === undefined || highlightedIndex === -1) return
-		// 	rowVirtualizer.scrollToIndex(highlightedIndex)
-		// },
+		onHighlightedIndexChange: ({ highlightedIndex }) => {
+			if (highlightedIndex === undefined || highlightedIndex === -1) return
+			rowVirtualizer.scrollToIndex(highlightedIndex)
+		},
 	})
 
 	return (
